@@ -1,7 +1,7 @@
 NAME = inception
 
 DOCKER_COMPOSE = docker-compose -f srcs/docker-compose.yml
-VOLUMES_PATH = /home/alsiavos/data
+VOLUMES_PATH = /home/jules/data
 
 all: hosts volumes up
 
@@ -35,7 +35,7 @@ fclean: clean
 
 clean-hosts:
 	@echo "Removing domain from /etc/hosts..."
-	@sudo sed -i '/alsiavos.42.fr/d' /etc/hosts
+	@sudo sed -i '/jules.42.fr/d' /etc/hosts
 
 re: fclean all
 

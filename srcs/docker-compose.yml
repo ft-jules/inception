@@ -55,11 +55,11 @@ volumes:
     driver_opts:
       type: none
       o: bind
-      device: /home/alsiavos/data/wordpress
+      device: /home/jules/data/wordpress
   mariadb_data:
     driver: local
     driver_opts:
       type: none
       o: bind
-      device: /home/alsiavos/data/mariadb
+      device: /home/jules/data/mariadb
 

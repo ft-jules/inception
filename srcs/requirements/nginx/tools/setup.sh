@@ -3,7 +3,7 @@
 openssl req -x509 -nodes \
     -out /etc/nginx/ssl/inception.crt \
     -keyout /etc/nginx/ssl/inception.key \
-    -subj "/C=FR/ST=IDF/L=Paris/O=42/OU=42/CN=alsiavos.42.fr" \
+    -subj "/C=FR/ST=IDF/L=Paris/O=42/OU=42/CN=jules.42.fr" \
     -days 365 \
     -newkey rsa:4096
 
