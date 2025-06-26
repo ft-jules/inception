@@ -1,38 +1,41 @@
 version: '3.8'
 
 services:
+  # Service du serveur web Nginx
   nginx:
-    build: 
-      context: ./requirements/nginx
+    build:
+      context: ./requirements/nginx # Indique où trouver le Dockerfile pour construire l'image
       dockerfile: Dockerfile
     container_name: nginx
     ports:
-      - "443:443"
+      - "443:443" # Expose le port 443 (HTTPS) de ton ordinateur vers le conteneur
     volumes:
-      - wordpress_data:/var/www/html
-      - ./requirements/nginx/conf:/etc/nginx/conf.d
+      - wordpress_data:/var/www/html # Partage les fichiers de WordPress avec Nginx
+      - ./requirements/nginx/conf:/etc/nginx/conf.d # Monte le fichier de configuration Nginx
     depends_on:
-      - wordpress
+      - wordpress # Nginx ne démarrera qu'après le lancement de WordPress
     networks:
       - inception
     restart: unless-stopped
 
+  # Service de l'application WordPress
   wordpress:
-    build: 
+    build:
       context: ./requirements/wordpress
       dockerfile: Dockerfile
     container_name: wordpress
-    env_file: .env
+    env_file: .env # Charge les variables d'environnement depuis le fichier .env
     volumes:
-      - wordpress_data:/var/www/html
+      - wordpress_data:/var/www/html # Stocke les fichiers de WordPress dans un volume
     depends_on:
-      - mariadb
+      - mariadb # WordPress attend que la base de données soit prête
     networks:
       - inception
     restart: unless-stopped
 
+  # Service de la base de données MariaDB
   mariadb:
-    build: 
+    build:
       context: ./requirements/mariadb
       dockerfile: Dockerfile
     container_name: mariadb
@@ -40,26 +43,27 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - mariadb_data:/var/lib/mysql
+      - mariadb_data:/var/lib/mysql # Stocke les données de la base de données dans un volume
     networks:
       - inception
     restart: unless-stopped
 
+# Définit le réseau pour que les conteneurs puissent communiquer
 networks:
   inception:
     driver: bridge
 
+# Définit les volumes pour la persistance des données
 volumes:
   wordpress_data:
     driver: local
     driver_opts:
       type: none
       o: bind
-      device: /home/jules/data/wordpress
+      device: /home/jules/data/wordpress # Important : chemin à adapter sur ta machine
   mariadb_data:
     driver: local
     driver_opts:
       type: none
       o: bind
-      device: /home/jules/data/mariadb
-
+      device: /home/jules/data/mariadb # Important : chemin à adapter sur ta machine
