@@ -1,0 +1,1 @@
+I know the .env file shouldn't be in the repository, but this is a 42 school project where we’re learning to use Docker to launch a simple setup with a database, WordPress, and Nginx. It’s just a basic WordPress where you can post a comment that gets stored in a volume—nothing more, and there’s no sensitive information in the .env file.
