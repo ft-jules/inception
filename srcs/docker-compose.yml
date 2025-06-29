@@ -28,11 +28,12 @@ services:
     volumes:
       - wordpress_data:/var/www/html # Stocke les fichiers de WordPress dans un volume
     depends_on:
-      - mariadb # WordPress attend que la base de données soit prête
+      - mariadb : # WordPress attend que la base de données soit prête
+          condition: service_healthy # Attend que le healthcheck de mariadb soit OK
     networks:
       - inception
     restart: unless-stopped
-
+    
   # Service de la base de données MariaDB
   mariadb:
     build:
@@ -40,13 +41,19 @@ services:
       dockerfile: Dockerfile
     container_name: mariadb
     env_file: .env
-    ports:
-      - "3306:3306"
+    # ports:
+    #   - "3306:3306" //Seul wordp communique avec DB. Exposer à l'ext aug la surface d'attaque
     volumes:
       - mariadb_data:/var/lib/mysql # Stocke les données de la base de données dans un volume
     networks:
       - inception
     restart: unless-stopped
+    # DB prête à accepter des connexions
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+      start_period: 10s
 
 # Définit le réseau pour que les conteneurs puissent communiquer
 networks:
