@@ -28,8 +28,8 @@ services:
     volumes:
       - wordpress_data:/var/www/html # Stocke les fichiers de WordPress dans un volume
     depends_on:
-      - mariadb : # WordPress attend que la base de données soit prête
-          condition: service_healthy # Attend que le healthcheck de mariadb soit OK
+      mariadb : # WordPress attend que la base de données soit prête
+        condition: service_healthy # Attend que le healthcheck de mariadb soit OK
     networks:
       - inception
     restart: unless-stopped

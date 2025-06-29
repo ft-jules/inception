@@ -35,7 +35,7 @@ fclean: clean
 
 clean-hosts:
 	@echo "Removing domain from /etc/hosts..."
-	@sudo sed -i '/jules.42.fr/d' /etc/hosts
+	@sudo sed -i '/jpointil.42.fr/d' /etc/hosts
 
 re: fclean all
 
