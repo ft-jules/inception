@@ -1,76 +1,62 @@
 version: '3.8'
 
 services:
-  # Service du serveur web Nginx
   nginx:
     build:
-      context: ./requirements/nginx # Indique où trouver le Dockerfile pour construire l'image
+      context: ./requirements/nginx
       dockerfile: Dockerfile
     container_name: nginx
     ports:
-      - "443:443" # Expose le port 443 (HTTPS) de ton ordinateur vers le conteneur
+      - "443:443"
     volumes:
-      - wordpress_data:/var/www/html # Partage les fichiers de WordPress avec Nginx
-      - ./requirements/nginx/conf:/etc/nginx/conf.d # Monte le fichier de configuration Nginx
+      - wordpress_data:/var/www/html 
+      - ./requirements/nginx/conf:/etc/nginx/conf.d
     depends_on:
-      - wordpress # Nginx ne démarrera qu'après le lancement de WordPress
+      - wordpress
     networks:
       - inception
     restart: unless-stopped
 
-  # Service de l'application WordPress
   wordpress:
     build:
       context: ./requirements/wordpress
       dockerfile: Dockerfile
     container_name: wordpress
-    env_file: .env # Charge les variables d'environnement depuis le fichier .env
+    env_file: .env
     volumes:
-      - wordpress_data:/var/www/html # Stocke les fichiers de WordPress dans un volume
+      - wordpress_data:/var/www/html
     depends_on:
-      mariadb : # WordPress attend que la base de données soit prête
-        condition: service_healthy # Attend que le healthcheck de mariadb soit OK
+      - mariadb 
     networks:
       - inception
     restart: unless-stopped
     
-  # Service de la base de données MariaDB
   mariadb:
     build:
       context: ./requirements/mariadb
       dockerfile: Dockerfile
     container_name: mariadb
     env_file: .env
-    # ports:
-    #   - "3306:3306" //Seul wordp communique avec DB. Exposer à l'ext aug la surface d'attaque
     volumes:
-      - mariadb_data:/var/lib/mysql # Stocke les données de la base de données dans un volume
+      - mariadb_data:/var/lib/mysql
     networks:
       - inception
     restart: unless-stopped
-    # DB prête à accepter des connexions
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      timeout: 20s
-      retries: 10
-      start_period: 10s
 
-# Définit le réseau pour que les conteneurs puissent communiquer
 networks:
   inception:
     driver: bridge
 
-# Définit les volumes pour la persistance des données
 volumes:
   wordpress_data:
     driver: local
     driver_opts:
       type: none
       o: bind
-      device: /home/jules/data/wordpress # Important : chemin à adapter sur ta machine
+      device: /home/jules/data/wordpress
   mariadb_data:
     driver: local
     driver_opts:
       type: none
       o: bind
-      device: /home/jules/data/mariadb # Important : chemin à adapter sur ta machine
+      device: /home/jules/data/mariadb
