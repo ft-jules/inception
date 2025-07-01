@@ -16,7 +16,7 @@ volumes:
 	@chmod 755 $(VOLUMES_PATH)/mariadb
 
 up:
-	@$(DOCKER_COMPOSE) up --build
+	@$(DOCKER_COMPOSE) up --build -d
 
 down:
 	@$(DOCKER_COMPOSE) down
